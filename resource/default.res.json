@@ -1,0 +1,142 @@
+{
+	"groups": [
+		{
+			"keys": "gem_1_png,gem_2_png,gem_3_png,gem_4_png,gem_5_png,h5by_xyx_zzjm_png,h5by_xyx_zzjmzb_png,h5by_xyx_zzjmyb_png,h5by_xyx_gs_png,h5by_xyx_ks_png,h5by_xyx_fkdb_png,gem_brick01_01_png,h5by_xyx_xbs_png,h5by_xyx_dyg_png,h5by_xyx_deg_png,h5by_xyx_dsg_png,elem_eli_1_json,elem_eli_2_json,elem_eli_3_json,elem_eli_4_json,elem_eli_5_json,score_json,h5by_xyx_hsks_png,combo_json",
+			"name": "preload"
+		}
+	],
+	"resources": [
+		{
+			"url": "config/description.json",
+			"type": "json",
+			"name": "description_json"
+		},
+		{
+			"url": "assets/lhdb_ui_main/gem_1.png",
+			"type": "image",
+			"name": "gem_1_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/gem_2.png",
+			"type": "image",
+			"name": "gem_2_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/gem_3.png",
+			"type": "image",
+			"name": "gem_3_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/gem_4.png",
+			"type": "image",
+			"name": "gem_4_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/gem_5.png",
+			"type": "image",
+			"name": "gem_5_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_zzjm.png",
+			"type": "image",
+			"name": "h5by_xyx_zzjm_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_zzjmzb.png",
+			"type": "image",
+			"name": "h5by_xyx_zzjmzb_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_zzjmyb.png",
+			"type": "image",
+			"name": "h5by_xyx_zzjmyb_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_gs.png",
+			"type": "image",
+			"name": "h5by_xyx_gs_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_ks.png",
+			"type": "image",
+			"name": "h5by_xyx_ks_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_fkdb.png",
+			"type": "image",
+			"name": "h5by_xyx_fkdb_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/gem_brick01_01.png",
+			"type": "image",
+			"name": "gem_brick01_01_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_xbs.png",
+			"type": "image",
+			"name": "h5by_xyx_xbs_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_dyg.png",
+			"type": "image",
+			"name": "h5by_xyx_dyg_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_deg.png",
+			"type": "image",
+			"name": "h5by_xyx_deg_png"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_dsg.png",
+			"type": "image",
+			"name": "h5by_xyx_dsg_png"
+		},
+		{
+			"url": "assets/lhdb_eff_elem_eli/elem_eli_1.json",
+			"type": "sheet",
+			"name": "elem_eli_1_json",
+			"subkeys": "elem_eli_1_0,elem_eli_1_1,elem_eli_1_2,elem_eli_1_3,elem_eli_1_4,elem_eli_1_5,elem_eli_1_6,elem_eli_1_7,elem_eli_1_8,elem_eli_1_9"
+		},
+		{
+			"url": "assets/lhdb_eff_elem_eli/elem_eli_2.json",
+			"type": "sheet",
+			"name": "elem_eli_2_json",
+			"subkeys": "elem_eli_2_0,elem_eli_2_1,elem_eli_2_2,elem_eli_2_3,elem_eli_2_4,elem_eli_2_5,elem_eli_2_6,elem_eli_2_7,elem_eli_2_8,elem_eli_2_9"
+		},
+		{
+			"url": "assets/lhdb_eff_elem_eli/elem_eli_3.json",
+			"type": "sheet",
+			"name": "elem_eli_3_json",
+			"subkeys": "elem_eli_3_0,elem_eli_3_1,elem_eli_3_2,elem_eli_3_3,elem_eli_3_4,elem_eli_3_5,elem_eli_3_6,elem_eli_3_7,elem_eli_3_8,elem_eli_3_9"
+		},
+		{
+			"url": "assets/lhdb_eff_elem_eli/elem_eli_4.json",
+			"type": "sheet",
+			"name": "elem_eli_4_json",
+			"subkeys": "elem_eli_4_0,elem_eli_4_1,elem_eli_4_2,elem_eli_4_3,elem_eli_4_4,elem_eli_4_5,elem_eli_4_6,elem_eli_4_7,elem_eli_4_8,elem_eli_4_9"
+		},
+		{
+			"url": "assets/lhdb_eff_elem_eli/elem_eli_5.json",
+			"type": "sheet",
+			"name": "elem_eli_5_json",
+			"subkeys": "elem_eli_5_0,elem_eli_5_1,elem_eli_5_2,elem_eli_5_3,elem_eli_5_4,elem_eli_5_5,elem_eli_5_6,elem_eli_5_7,elem_eli_5_8,elem_eli_5_9"
+		},
+		{
+			"url": "assets/lhdb_font_score/score.json",
+			"type": "sheet",
+			"name": "score_json",
+			"subkeys": "0,1,2,3,4,5,6,7,8,9"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_hsks.png",
+			"type": "image",
+			"name": "h5by_xyx_hsks_png"
+		},
+		{
+			"url": "assets/lhdb_font_combo/combo.json",
+			"type": "sheet",
+			"name": "combo_json",
+			"subkeys": "0,1,2,3,4,5,6,7,8,9,x"
+		}
+	]
+}
