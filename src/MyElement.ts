@@ -3,16 +3,32 @@ class MyElement extends egret.Bitmap {
     public eleIndex:number;
     public to:number;
     public n:number;
-    public constructor(x:number,y:number,to:number,n:number) {
+
+    private rate = [0.1, 0.2, 0.5, 0.1, 0.1];  // 各元素出现概率，一共5种元素
+    public constructor(x:number,y:number,to:number,n:number, isBomb:boolean=false) {
         super();
 
         this.to = to;
         this.n = n;
 
-        //随机颜色
-        this.eleIndex = Math.floor(Math.random()*5+1);
+        if (isBomb) {
+            this.eleIndex = -1;
+        }
+        else {
+            //随机颜色
+            let random = Math.random();
+            let sum = 0;
+            this.eleIndex = 0;
+            for (let i = 0; i < this.rate.length; i++) {
+                sum += this.rate[i];
+                this.eleIndex = i;
+                if (sum >= random) break;
+            }
+            this.eleIndex++;
+        }
+        
 
-        var texture:egret.Texture = RES.getRes(`gem_${this.eleIndex}_png`);
+        var texture:egret.Texture = isBomb?RES.getRes(`gem_bomb_png`):RES.getRes(`gem_${this.eleIndex}_png`);
         this.texture = texture;
         this.anchorOffsetX = this.width / 2;
         this.anchorOffsetY = this.height / 2;
@@ -40,14 +56,27 @@ class MyElement extends egret.Bitmap {
         let funcChange = ():void => {
             this.x += x;
         };
-        egret.Tween.get(this, { onChange:funcChange, onChangeObj:this })
-        .to({y: this.stage.stageHeight}, 500, egret.Ease.backIn)
-        .call(() => {
-            //从显示容器中移除
+
+        let alpha = Math.random() * Math.PI * 2;
+        let v = 40;
+        let vX = Math.sin(alpha) * v * 0.5;
+        let vY = Math.cos(alpha) * v;
+        let timer = new egret.Timer(30, 30);
+        let timerFunc = function() {
+            this.x += vX;
+            this.y += vY;
+            vY += 5;
+        };
+
+        timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this);
+        timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, () => {
+             //从显示容器中移除
             if (elemContainer.contains(this)) {
                 elemContainer.removeChild(this);
             }
-        });
+        }, this);
+        timer.start();
+
     }
 
     //消除效果
@@ -65,6 +94,60 @@ class MyElement extends egret.Bitmap {
         timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, () => {
             if (elemContainer.contains(this)) {
                 elemContainer.removeChild(this);
+            }
+        }, this);
+        timer.start();
+    }
+
+    //炸弹飞行
+    public bombFly(toX:number, toY:number, container:egret.DisplayObjectContainer, main:Main) {
+        container.setChildIndex( this, 100 );
+        let fromX = this.x, fromY = this.y;
+        let g = 5;
+        let t = 510;
+        let deltaT = 30;
+        let n = t / deltaT;
+        let vX = (toX - fromX) / n;
+        let vY = (toY - fromY) / n - g * n / 2;
+        let timer = new egret.Timer(deltaT, n);
+        let timerFunc = function() {
+            this.x += vX;
+            this.y += vY;
+
+            vY += g;
+            
+            this.scaleX -= 0.01;
+            this.scaleY -= 0.01;
+            this.rotation += 30;
+        };
+        timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this);
+        timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, () => {
+            
+            this.bomb(container, main);
+        }, this);
+        timer.start();
+    }
+
+    //炸弹爆炸
+    private bomb(container:egret.DisplayObjectContainer, main:Main) {
+        var texture:egret.SpriteSheet = RES.getRes(`bomb_json`);
+        let timer = new egret.Timer(50, 20);
+        let index = 0;
+        this.rotation = 0;  // 把飞行过程中的旋转量回正
+        let timerFunc = function() {
+            this.texture = texture.getTexture(`elem_bomb_${index}`);
+            this.anchorOffsetX = this.width / 2;
+            this.anchorOffsetY = this.height / 2;
+            index++;
+            if (index === 5) {
+                // 爆炸动画播放至第5帧时调用爆炸后逻辑，包括清除砖块进入下一关等
+                main.afterBomb();
+            }
+        };
+        timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this);
+        timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, () => {
+             if (container.contains(this)) {
+                container.removeChild(this);
             }
         }, this);
         timer.start();

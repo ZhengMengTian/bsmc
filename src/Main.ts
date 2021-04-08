@@ -15,9 +15,18 @@ class Main extends egret.DisplayObjectContainer {
     private brickContainer1:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
     private brickContainer2:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
     private brickContainer3:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
+    private button1;
+    private button2;
     private elementArr;
+    private level = 1;  //初始关卡
+    private brickNum;  // 砖块数量
     private n:number; //棋盘边长
     private minNum:number = 4; // 最少多少个相同宝石可消除
+    private running:boolean = false;  //游戏是否正在进行中
+    private auto:boolean = false;  //是否正在挂机
+
+    private bombProb = [0.9, 0.9, 0.9];  //炸弹生成概率
+    private hasBomb = false;  // 是否有炸弹
 
     public constructor() {
         super();
@@ -69,75 +78,182 @@ class Main extends egret.DisplayObjectContainer {
     
         this.mainContainer.x = this.stage.stageWidth / 2;
         this.mainContainer.y = this.stage.stageHeight / 2;
-        this.createBitmapByName("h5by_xyx_zzjm_png", 0, 0, this.mainContainer);
 
         this.comboList = new ComboList(this.stage.stageWidth * 0.16,this.stage.stageHeight * 0.83);
 
         this.buttonContainer.x = this.stage.stageWidth * 0.82;
         this.buttonContainer.y = this.stage.stageHeight * 0.8;
         this.createBitmapByName("h5by_xyx_zzjmyb_png", 0, 0, this.buttonContainer);
-        this.createBitmapByName("h5by_xyx_ks_png", 20, 20, this.buttonContainer);
+        this.button1 = this.createBitmapByName("h5by_xyx_ks_png", 20, 20, this.buttonContainer);
+        this.button2 = this.createBitmapByName("h5by_xyx_gj_png", 20, 80, this.buttonContainer);
+
         this.enableStartButton();
+        this.enableGj();
 
         this.addChild( this.comboList );
         this.addChild( this.buttonContainer );
         this.addChild( this.mainContainer );
 
-        this.initGame();
+        this.initGame(this.level);
     }
 
     // 启用开始按钮
     private enableStartButton():void{
-        let startButton = this.buttonContainer.getChildAt(1) as egret.Bitmap;
-        var texture:egret.Texture = RES.getRes("h5by_xyx_ks_png");
-        startButton.texture = texture;
-        startButton.touchEnabled = true;
-        startButton.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
-        startButton.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
-        startButton.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
-        startButton.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        startButton.addEventListener(egret.TouchEvent.TOUCH_END, this.startGame, this);
+        this.buttonContainer.removeChild(this.button1);
+        this.button1 = this.createBitmapByName("h5by_xyx_ks_png", 20, 20, this.buttonContainer);
+        this.button1.touchEnabled = true;
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, ()=>{this.startGame();this.disableStartButton();}, this);
     }
 
     // 禁用开始按钮
     private disableStartButton():void{
-        let startButton = this.buttonContainer.getChildAt(1) as egret.Bitmap;
-        var texture:egret.Texture = RES.getRes("h5by_xyx_hsks_png");
-        startButton.texture = texture;
-        startButton.touchEnabled = false;
+        this.buttonContainer.removeChild(this.button1);
+        this.button1 = this.createBitmapByName("h5by_xyx_hsks_png", 20, 20, this.buttonContainer);
+    }
+
+    // 启用挂机按钮
+    private enableGj() {
+        this.buttonContainer.removeChild(this.button2);
+        this.button2 = this.createBitmapByName("h5by_xyx_gj_png", 20, 80, this.buttonContainer);
+        this.button2.touchEnabled = true;
+        this.button2.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
+        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
+        this.button2.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
+        this.button2.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
+        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, ()=>{this.gj();this.disableGj();}, this);
+    }
+
+    // 禁用挂机按钮&添加取消挂机按钮
+    private disableGj() {
+        this.buttonContainer.removeChild(this.button2);
+        this.button2 = this.createBitmapByName("h5by_xyx_gjz_png", 20, 80, this.buttonContainer);
+        
+
+        this.buttonContainer.removeChild(this.button1);
+        this.button1 = this.createBitmapByName("h5by_xyx_qxgj_png", 20, 20, this.buttonContainer);
+        this.button1.touchEnabled = true;
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.gjCancel, this);
+    }
+
+    //挂机
+    private gj() {
+        if (this.running) {
+            this.auto = true;
+        }
+        else {
+            this.auto = true;
+            this.startGame();
+        }
+        
+    }
+
+    //取消挂机
+    private gjCancel() {
+        
+        this.auto = false;
+        this.disableStartButton();
+        this.enableGj();
     }
 
     //创建关卡砖块以及棋盘背景
     private initGame(level:number=1):void {
 
-        this.n = 4;
-        this.createBitmapByName("h5by_xyx_dyg_png", 10, -265, this.mainContainer);
+        this.elementArr = [];
+        this.mainContainer.removeChildren();
+        this.elemContainer.removeChildren();
+        this.elemBgContainer.removeChildren();
+        this.brickContainer1.removeChildren();
+        this.brickContainer2.removeChildren();
+        this.brickContainer3.removeChildren();
+        this.createBitmapByName("h5by_xyx_zzjm_png", 0, 0, this.mainContainer);
 
-        this.elemBgContainer.x = -167;
-        this.elemBgContainer.y = -195;
-        this.mainContainer.addChild(this.elemBgContainer);
-        for (let i = 3; i < 7; i++) {
-            for (let j = 1; j < 5; j++) {
-                this.createElemBg(i, j);
-            }
+        switch (level) {
+            case 1: 
+                this.brickNum = 15;
+                this.n = 4;
+                this.createBitmapByName("h5by_xyx_dyg_png", 10, -265, this.mainContainer);
+                this.elemBgContainer.x = -167;
+                this.elemBgContainer.y = -195;
+                this.mainContainer.addChild(this.elemBgContainer);
+                for (let i = 3; i < 7; i++) {
+                    for (let j = 1; j < 5; j++) {
+                        this.createElemBg(i, j);
+                    }
+                }
+                this.brickContainer1.x = 170;
+                this.brickContainer1.y = 205;
+                this.mainContainer.addChild(this.brickContainer1);
+                this.createBrick1(this.brickNum);
+                this.brickContainer2.x = -165;
+                this.brickContainer2.y = 205;
+                this.mainContainer.addChild(this.brickContainer2);
+                this.createBrick2(this.brickNum);
+                this.brickContainer3.x = -182;
+                this.brickContainer3.y = 233;
+                this.mainContainer.addChild(this.brickContainer3);
+                this.createBrick3(this.brickNum);
+
+                this.elemContainer.x = -167;
+                this.elemContainer.y = -195;
+                this.mainContainer.addChild(this.elemContainer);
+
+                break;
+            case 2: 
+                this.brickNum = 15;
+                this.n = 5;
+                this.createBitmapByName("h5by_xyx_deg_png", 10, -265, this.mainContainer);
+                this.elemBgContainer.x = -167;
+                this.elemBgContainer.y = -195;
+                this.mainContainer.addChild(this.elemBgContainer);
+                for (let i = 2; i < 7; i++) {
+                    for (let j = 1; j < 6; j++) {
+                        this.createElemBg(i, j);
+                    }
+                }
+                this.brickContainer2.x = -165;
+                this.brickContainer2.y = 205;
+                this.mainContainer.addChild(this.brickContainer2);
+                this.createBrick2(this.brickNum);
+                this.brickContainer3.x = -182;
+                this.brickContainer3.y = 233;
+                this.mainContainer.addChild(this.brickContainer3);
+                this.createBrick3(this.brickNum);
+                this.elemContainer.x = -167;
+                this.elemContainer.y = -195;
+                this.mainContainer.addChild(this.elemContainer);
+
+                break;
+            case 3: 
+                this.brickNum = 15;
+                this.n = 6;
+                this.createBitmapByName("h5by_xyx_dsg_png", 10, -265, this.mainContainer);
+                this.elemBgContainer.x = -167;
+                this.elemBgContainer.y = -195;
+                this.mainContainer.addChild(this.elemBgContainer);
+                for (let i = 1; i < 7; i++) {
+                    for (let j = 0; j < 6; j++) {
+                        this.createElemBg(i, j);
+                    }
+                }
+                this.brickContainer3.x = -182;
+                this.brickContainer3.y = 233;
+                this.mainContainer.addChild(this.brickContainer3);
+                this.createBrick3(this.brickNum);
+                this.elemContainer.x = -167;
+                this.elemContainer.y = -195;
+                this.mainContainer.addChild(this.elemContainer);
+
+                break;
         }
-
-        this.brickContainer1.x = 170;
-        this.brickContainer1.y = 205;
-        this.mainContainer.addChild(this.brickContainer1);
-        this.createBrick1(15);
-        this.brickContainer2.x = -165;
-        this.brickContainer2.y = 205;
-        this.mainContainer.addChild(this.brickContainer2);
-        this.createBrick2(15);
-        this.brickContainer3.x = -182;
-        this.brickContainer3.y = 233;
-        this.mainContainer.addChild(this.brickContainer3);
-        this.createBrick3(15);
-
-        this.elemContainer.x = -167;
-        this.elemContainer.y = -195;
-        this.mainContainer.addChild(this.elemContainer);
+        
     }
 
     //创建棋盘背景
@@ -178,11 +294,11 @@ class Main extends egret.DisplayObjectContainer {
         evt.$target.scaleX = evt.$target.scaleY = 1;
     }
 
-    private startGame(evt:egret.TouchEvent):void{
-        console.log(evt);
+    private startGame():void{
         console.log('游戏开始');
-        this.comboList.addOne(1,5);
-        this.disableStartButton();
+
+        this.running = true;
+        this.comboList.clearAll();
 
         if (this.elemContainer.numChildren !== 0) {
             //先将原来的宝石移除
@@ -202,14 +318,25 @@ class Main extends egret.DisplayObjectContainer {
 
     private createElement():void {
 
-        // 生成宝石
+        //生成炸弹的逻辑
+        this.hasBomb = this.ifBomb();
+        let bombPosition = {i: -1,j: -1};
+        if (this.hasBomb) {
+            //随机炸弹位置
+            bombPosition = {
+                i: Math.floor(Math.random() * this.n),
+                j: Math.floor(Math.random() * this.n)
+            }
+        }
+
+        // 生成宝石或炸弹
         this.elementArr = [];
         let n = 0;
         for (let i = 0; i < this.n; i++) {
             this.elementArr.push([]);
             for (let j = 0; j < this.n; j++) {
                 let bg = this.elemBgContainer.getChildAt(n);
-                let elem = new MyElement(bg.x, -this.stage.stageHeight/2, bg.y, n)
+                let elem = new MyElement(bg.x, -this.stage.stageHeight/2, bg.y, n , i === bombPosition.i && j === bombPosition.j)
                 this.elemContainer.addChild(elem);
                 this.elementArr[i][j] = elem;
                 n++; 
@@ -227,21 +354,122 @@ class Main extends egret.DisplayObjectContainer {
             }, this, i*100);
         }
 
-        //调用消除逻辑
-        egret.setTimeout(() => {this.eliminate();},this,this.n * 100 + 300);
+        if (this.hasBomb) {
+
+            //调用炸弹爆炸逻辑
+            egret.setTimeout(() => {this.bomb(bombPosition);},this,this.n * 100 + 300);
+        }
+        else {
+            //调用消除逻辑
+            egret.setTimeout(() => {this.eliminate();},this,this.n * 100 + 300);
+        }
+    }
+
+    //是否应该生成炸弹
+    private ifBomb():boolean {
+        if (this.level >= 3 && this.brickNum <= 0) {
+            return false;
+        }
+        return Math.random() < this.bombProb[this.level - 1];
+    }
+
+    //炸弹爆炸逻辑
+    private bomb(position) {
+        let brickPos = this.getBrickPos();
+        this.elementArr[position.i][position.j].bombFly(brickPos.x,brickPos.y, this.elemContainer, this);
+        this.elementArr[position.i][position.j] = null;
+    }
+
+    //炸弹爆炸后
+    public afterBomb() {
+        this.brickNum--;
+        switch (this.level) {
+            case 1:
+                this.brickContainer1.removeChildren();
+                this.createBrick1(this.brickNum);
+                break;
+            case 2:
+                this.brickContainer2.removeChildren();
+                this.createBrick2(this.brickNum);
+                break;
+            case 3:
+                this.brickContainer3.removeChildren();
+                this.createBrick3(this.brickNum);
+                break;
+            default:
+                return;
+        }
+        if (this.brickNum > 0) {
+            this.sortOut();
+            this.fillEmpty();
+            //调用消除逻辑
+            egret.setTimeout(() => {this.eliminate();},this,400);
+        }
+        else if (this.level < 3) {
+            this.initGame(++this.level);
+            this.startGame();
+        }
+        else {
+            // 回到第一关
+            this.level = 1;
+            this.initGame(this.level);
+            this.startGame();              
+        }
         
     }
 
+    //获取砖块的位置坐标
+    private getBrickPos() {
+        let point:egret.Point;
+        let brick;
+        switch (this.level) {
+            case 1:
+                brick = this.brickContainer1.getChildAt(this.brickNum - 1);
+                point = this.brickContainer1.localToGlobal(brick.x, brick.y);
+                point = this.elemContainer.globalToLocal(point.x,point.y)
+                break;
+            case 2:
+                brick = this.brickContainer2.getChildAt(this.brickNum - 1);
+                point = this.brickContainer2.localToGlobal(brick.x, brick.y);
+                point = this.elemContainer.globalToLocal(point.x,point.y)
+                break;
+            case 3:
+                brick = this.brickContainer3.getChildAt(this.brickNum - 1);
+                point = this.brickContainer3.localToGlobal(brick.x, brick.y);
+                point = this.elemContainer.globalToLocal(point.x,point.y)
+                break;
+            default:
+                return point;
+        }
+        return point;
+    }
 
     private eliminate() {
         // 计算是否有可消除的
         let arr = this.eliminateCalc();
         console.log(arr);
         if (arr.length > 0) {
+            //有可消除的元素
             this.eliminateAct(arr);
         }
         else {
-            this.enableStartButton();
+            //无可消除的元素
+            this.comboList.showAll();
+
+                if (this.auto) {
+                    //如果正在挂机
+                    egret.setTimeout(() => {
+                    
+                        this.startGame();
+                    },this,800);
+                }
+                else {
+                    //如果没有挂机
+                    this.running = false;
+                    this.enableStartButton();
+                }
+            
+            
         }
     }
 
@@ -320,6 +548,9 @@ class Main extends egret.DisplayObjectContainer {
             let score = new Score(point.x, point.y, this.getScore(arr[0].length), this);
             this.addChild(score);
 
+            //生成连击
+            this.comboList.addOne(element.eleIndex,arr[0].length,point.x, point.y, this);
+
             //消除
             arr[0].forEach(v => {
                 this.elementArr[v.i][v.j].eliminate(this.elemContainer);
@@ -388,7 +619,7 @@ class Main extends egret.DisplayObjectContainer {
         }
     }
 
-    private createBitmapByName(name:string, x:number, y:number, container:egret.DisplayObjectContainer, offset:boolean=true):void {
+    private createBitmapByName(name:string, x:number, y:number, container:egret.DisplayObjectContainer, offset:boolean=true) {
         var result:egret.Bitmap = new egret.Bitmap();
         var texture:egret.Texture = RES.getRes(name);
         result.texture = texture;
@@ -397,5 +628,6 @@ class Main extends egret.DisplayObjectContainer {
         result.x = x;
         result.y = y;
         container.addChild(result);
+        return result;
     }
 }
