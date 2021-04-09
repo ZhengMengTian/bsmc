@@ -8,15 +8,14 @@
 class Main extends egret.DisplayObjectContainer {
 
     private mainContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
-    private comboList:ComboList;
-    private buttonContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
+    private comboList:ComboList;  // 连击显示区实例
+    private operationDesk:OperationDesk;  // 操作台实例
+    private goldCoin:GoldCoin;  // 金币显示区实例
     private elemContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
     private elemBgContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
     private brickContainer1:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
     private brickContainer2:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
     private brickContainer3:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
-    private button1;
-    private button2;
     private elementArr;
     private level = 1;  //初始关卡
     private brickNum;  // 砖块数量
@@ -28,6 +27,8 @@ class Main extends egret.DisplayObjectContainer {
     private bombProb = [0.9, 0.9, 0.9];  //炸弹生成概率
     private hasBomb = false;  // 是否有炸弹
 
+    private initGoldCoin:number = 100000000; //初始金币
+
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
@@ -37,6 +38,7 @@ class Main extends egret.DisplayObjectContainer {
         //初始化Resource资源加载库
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
         RES.loadConfig("resource/default.res.json", "resource/");
+
     }
 
     private onConfigComplete(event:RES.ResourceEvent):void {
@@ -75,76 +77,27 @@ class Main extends egret.DisplayObjectContainer {
     //创建游戏场景
     private createGameScene():void {
 
-    
         this.mainContainer.x = this.stage.stageWidth / 2;
         this.mainContainer.y = this.stage.stageHeight / 2;
 
         this.comboList = new ComboList(this.stage.stageWidth * 0.16,this.stage.stageHeight * 0.83);
+        
+        this.operationDesk = new OperationDesk(this.stage.stageWidth * 0.82,this.stage.stageHeight * 0.8, this);
 
-        this.buttonContainer.x = this.stage.stageWidth * 0.82;
-        this.buttonContainer.y = this.stage.stageHeight * 0.8;
-        this.createBitmapByName("h5by_xyx_zzjmyb_png", 0, 0, this.buttonContainer);
-        this.button1 = this.createBitmapByName("h5by_xyx_ks_png", 20, 20, this.buttonContainer);
-        this.button2 = this.createBitmapByName("h5by_xyx_gj_png", 20, 80, this.buttonContainer);
-
-        this.enableStartButton();
-        this.enableGj();
+        this.goldCoin = new GoldCoin(this.stage.stageWidth * 0.02,this.stage.stageHeight * 0.05, this.initGoldCoin)
 
         this.addChild( this.comboList );
-        this.addChild( this.buttonContainer );
+        this.addChild( this.operationDesk );
+        this.addChild( this.goldCoin );
         this.addChild( this.mainContainer );
 
+
+        
         this.initGame(this.level);
     }
 
-    // 启用开始按钮
-    private enableStartButton():void{
-        this.buttonContainer.removeChild(this.button1);
-        this.button1 = this.createBitmapByName("h5by_xyx_ks_png", 20, 20, this.buttonContainer);
-        this.button1.touchEnabled = true;
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, ()=>{this.startGame();this.disableStartButton();}, this);
-    }
-
-    // 禁用开始按钮
-    private disableStartButton():void{
-        this.buttonContainer.removeChild(this.button1);
-        this.button1 = this.createBitmapByName("h5by_xyx_hsks_png", 20, 20, this.buttonContainer);
-    }
-
-    // 启用挂机按钮
-    private enableGj() {
-        this.buttonContainer.removeChild(this.button2);
-        this.button2 = this.createBitmapByName("h5by_xyx_gj_png", 20, 80, this.buttonContainer);
-        this.button2.touchEnabled = true;
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, ()=>{this.gj();this.disableGj();}, this);
-    }
-
-    // 禁用挂机按钮&添加取消挂机按钮
-    private disableGj() {
-        this.buttonContainer.removeChild(this.button2);
-        this.button2 = this.createBitmapByName("h5by_xyx_gjz_png", 20, 80, this.buttonContainer);
-        
-
-        this.buttonContainer.removeChild(this.button1);
-        this.button1 = this.createBitmapByName("h5by_xyx_qxgj_png", 20, 20, this.buttonContainer);
-        this.button1.touchEnabled = true;
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.gjCancel, this);
-    }
-
     //挂机
-    private gj() {
+    public gj() {
         if (this.running) {
             this.auto = true;
         }
@@ -156,11 +109,11 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     //取消挂机
-    private gjCancel() {
+    public gjCancel() {
         
         this.auto = false;
-        this.disableStartButton();
-        this.enableGj();
+        this.operationDesk.disableStartButton();
+        this.operationDesk.enableGj();
     }
 
     //创建关卡砖块以及棋盘背景
@@ -294,8 +247,17 @@ class Main extends egret.DisplayObjectContainer {
         evt.$target.scaleX = evt.$target.scaleY = 1;
     }
 
-    private startGame():void{
+    public startGame():void{
         console.log('游戏开始');
+
+        //判断金币是否足够
+        if (this.goldCoin.goldCoin<this.operationDesk.point) {
+            console.log('金币不足');
+            return;
+        }
+
+        //扣除金币开始游戏
+        this.goldCoin.add(-this.operationDesk.point);
 
         this.running = true;
         this.comboList.clearAll();
@@ -357,11 +319,11 @@ class Main extends egret.DisplayObjectContainer {
         if (this.hasBomb) {
 
             //调用炸弹爆炸逻辑
-            egret.setTimeout(() => {this.bomb(bombPosition);},this,this.n * 100 + 300);
+            egret.setTimeout(() => {this.bomb(bombPosition);},this,this.n * 100 + 400);
         }
         else {
             //调用消除逻辑
-            egret.setTimeout(() => {this.eliminate();},this,this.n * 100 + 300);
+            egret.setTimeout(() => {this.eliminate();},this,this.n * 100 + 400);
         }
     }
 
@@ -403,7 +365,7 @@ class Main extends egret.DisplayObjectContainer {
             this.sortOut();
             this.fillEmpty();
             //调用消除逻辑
-            egret.setTimeout(() => {this.eliminate();},this,400);
+            egret.setTimeout(() => {this.eliminate();},this,this.n * 100 + 400);
         }
         else if (this.level < 3) {
             this.initGame(++this.level);
@@ -466,7 +428,7 @@ class Main extends egret.DisplayObjectContainer {
                 else {
                     //如果没有挂机
                     this.running = false;
-                    this.enableStartButton();
+                    this.operationDesk.enableStartButton();
                 }
             
             
@@ -548,6 +510,9 @@ class Main extends egret.DisplayObjectContainer {
             let score = new Score(point.x, point.y, this.getScore(arr[0].length), this);
             this.addChild(score);
 
+            //金币增加
+            this.goldCoin.add(score.num);
+
             //生成连击
             this.comboList.addOne(element.eleIndex,arr[0].length,point.x, point.y, this);
 
@@ -564,13 +529,13 @@ class Main extends egret.DisplayObjectContainer {
             this.sortOut();
             this.fillEmpty();
             //调用消除逻辑
-            egret.setTimeout(() => {this.eliminate();},this,this.n * 100 + 200);
+            egret.setTimeout(() => {this.eliminate();},this,this.n * 100 + 400);
         }
     }
 
     // 分数规则
     private getScore(l:number):number {
-        return l*100;
+        return l*this.operationDesk.point / 10;
     }
 
     // 整理棋盘

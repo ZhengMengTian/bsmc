@@ -22,7 +22,6 @@ var Main = (function (_super) {
     function Main() {
         var _this = _super.call(this) || this;
         _this.mainContainer = new egret.DisplayObjectContainer();
-        _this.buttonContainer = new egret.DisplayObjectContainer();
         _this.elemContainer = new egret.DisplayObjectContainer();
         _this.elemBgContainer = new egret.DisplayObjectContainer();
         _this.brickContainer1 = new egret.DisplayObjectContainer();
@@ -34,6 +33,7 @@ var Main = (function (_super) {
         _this.auto = false; //是否正在挂机
         _this.bombProb = [0.9, 0.9, 0.9]; //炸弹生成概率
         _this.hasBomb = false; // 是否有炸弹
+        _this.initGoldCoin = 100000000; //初始金币
         _this.addEventListener(egret.Event.ADDED_TO_STAGE, _this.onAddToStage, _this);
         return _this;
     }
@@ -72,59 +72,13 @@ var Main = (function (_super) {
         this.mainContainer.x = this.stage.stageWidth / 2;
         this.mainContainer.y = this.stage.stageHeight / 2;
         this.comboList = new ComboList(this.stage.stageWidth * 0.16, this.stage.stageHeight * 0.83);
-        this.buttonContainer.x = this.stage.stageWidth * 0.82;
-        this.buttonContainer.y = this.stage.stageHeight * 0.8;
-        this.createBitmapByName("h5by_xyx_zzjmyb_png", 0, 0, this.buttonContainer);
-        this.button1 = this.createBitmapByName("h5by_xyx_ks_png", 20, 20, this.buttonContainer);
-        this.button2 = this.createBitmapByName("h5by_xyx_gj_png", 20, 80, this.buttonContainer);
-        this.enableStartButton();
-        this.enableGj();
+        this.operationDesk = new OperationDesk(this.stage.stageWidth * 0.82, this.stage.stageHeight * 0.8, this);
+        this.goldCoin = new GoldCoin(this.stage.stageWidth * 0.02, this.stage.stageHeight * 0.05, this.initGoldCoin);
         this.addChild(this.comboList);
-        this.addChild(this.buttonContainer);
+        this.addChild(this.operationDesk);
+        this.addChild(this.goldCoin);
         this.addChild(this.mainContainer);
         this.initGame(this.level);
-    };
-    // 启用开始按钮
-    Main.prototype.enableStartButton = function () {
-        var _this = this;
-        this.buttonContainer.removeChild(this.button1);
-        this.button1 = this.createBitmapByName("h5by_xyx_ks_png", 20, 20, this.buttonContainer);
-        this.button1.touchEnabled = true;
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, function () { _this.startGame(); _this.disableStartButton(); }, this);
-    };
-    // 禁用开始按钮
-    Main.prototype.disableStartButton = function () {
-        this.buttonContainer.removeChild(this.button1);
-        this.button1 = this.createBitmapByName("h5by_xyx_hsks_png", 20, 20, this.buttonContainer);
-    };
-    // 启用挂机按钮
-    Main.prototype.enableGj = function () {
-        var _this = this;
-        this.buttonContainer.removeChild(this.button2);
-        this.button2 = this.createBitmapByName("h5by_xyx_gj_png", 20, 80, this.buttonContainer);
-        this.button2.touchEnabled = true;
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, function () { _this.gj(); _this.disableGj(); }, this);
-    };
-    // 禁用挂机按钮&添加取消挂机按钮
-    Main.prototype.disableGj = function () {
-        this.buttonContainer.removeChild(this.button2);
-        this.button2 = this.createBitmapByName("h5by_xyx_gjz_png", 20, 80, this.buttonContainer);
-        this.buttonContainer.removeChild(this.button1);
-        this.button1 = this.createBitmapByName("h5by_xyx_qxgj_png", 20, 20, this.buttonContainer);
-        this.button1.touchEnabled = true;
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBegin, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.gjCancel, this);
     };
     //挂机
     Main.prototype.gj = function () {
@@ -139,8 +93,8 @@ var Main = (function (_super) {
     //取消挂机
     Main.prototype.gjCancel = function () {
         this.auto = false;
-        this.disableStartButton();
-        this.enableGj();
+        this.operationDesk.disableStartButton();
+        this.operationDesk.enableGj();
     };
     //创建关卡砖块以及棋盘背景
     Main.prototype.initGame = function (level) {
@@ -263,6 +217,13 @@ var Main = (function (_super) {
     Main.prototype.startGame = function () {
         var _this = this;
         console.log('游戏开始');
+        //判断金币是否足够
+        if (this.goldCoin.goldCoin < this.operationDesk.point) {
+            console.log('金币不足');
+            return;
+        }
+        //扣除金币开始游戏
+        this.goldCoin.add(-this.operationDesk.point);
         this.running = true;
         this.comboList.clearAll();
         if (this.elemContainer.numChildren !== 0) {
@@ -321,11 +282,11 @@ var Main = (function (_super) {
         }
         if (this.hasBomb) {
             //调用炸弹爆炸逻辑
-            egret.setTimeout(function () { _this.bomb(bombPosition); }, this, this.n * 100 + 300);
+            egret.setTimeout(function () { _this.bomb(bombPosition); }, this, this.n * 100 + 400);
         }
         else {
             //调用消除逻辑
-            egret.setTimeout(function () { _this.eliminate(); }, this, this.n * 100 + 300);
+            egret.setTimeout(function () { _this.eliminate(); }, this, this.n * 100 + 400);
         }
     };
     //是否应该生成炸弹
@@ -365,7 +326,7 @@ var Main = (function (_super) {
             this.sortOut();
             this.fillEmpty();
             //调用消除逻辑
-            egret.setTimeout(function () { _this.eliminate(); }, this, 400);
+            egret.setTimeout(function () { _this.eliminate(); }, this, this.n * 100 + 400);
         }
         else if (this.level < 3) {
             this.initGame(++this.level);
@@ -424,7 +385,7 @@ var Main = (function (_super) {
             else {
                 //如果没有挂机
                 this.running = false;
-                this.enableStartButton();
+                this.operationDesk.enableStartButton();
             }
         }
     };
@@ -500,6 +461,8 @@ var Main = (function (_super) {
             //生成分数
             var score = new Score(point.x, point.y, this.getScore(arr[0].length), this);
             this.addChild(score);
+            //金币增加
+            this.goldCoin.add(score.num);
             //生成连击
             this.comboList.addOne(element.eleIndex, arr[0].length, point.x, point.y, this);
             //消除
@@ -514,12 +477,12 @@ var Main = (function (_super) {
             this.sortOut();
             this.fillEmpty();
             //调用消除逻辑
-            egret.setTimeout(function () { _this.eliminate(); }, this, this.n * 100 + 200);
+            egret.setTimeout(function () { _this.eliminate(); }, this, this.n * 100 + 400);
         }
     };
     // 分数规则
     Main.prototype.getScore = function (l) {
-        return l * 100;
+        return l * this.operationDesk.point / 10;
     };
     // 整理棋盘
     Main.prototype.sortOut = function () {

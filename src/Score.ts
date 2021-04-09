@@ -6,6 +6,7 @@ class Score extends egret.DisplayObjectContainer{
 		let arr = num.toString().split('');
         let spriteSheet:egret.SpriteSheet = RES.getRes(`score_json`);
 		let space = 0;
+		this.num = num;
 
 		for (let i = 0; i < arr.length; i++) {
 			let numBitmap:egret.Bitmap = new egret.Bitmap();

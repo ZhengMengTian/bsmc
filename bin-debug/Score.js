@@ -18,6 +18,7 @@ var Score = (function (_super) {
         var arr = num.toString().split('');
         var spriteSheet = RES.getRes("score_json");
         var space = 0;
+        _this.num = num;
         for (var i = 0; i < arr.length; i++) {
             var numBitmap = new egret.Bitmap();
             numBitmap.texture = spriteSheet.getTexture(arr[i]);

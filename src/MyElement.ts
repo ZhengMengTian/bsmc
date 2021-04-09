@@ -4,7 +4,7 @@ class MyElement extends egret.Bitmap {
     public to:number;
     public n:number;
 
-    private rate = [0.1, 0.2, 0.5, 0.1, 0.1];  // 各元素出现概率，一共5种元素
+    private rate = [0.2, 0.2, 0.2, 0.2, 0.2];  // 各元素出现概率，一共5种元素
     public constructor(x:number,y:number,to:number,n:number, isBomb:boolean=false) {
         super();
 
@@ -103,6 +103,7 @@ class MyElement extends egret.Bitmap {
     public bombFly(toX:number, toY:number, container:egret.DisplayObjectContainer, main:Main) {
         container.setChildIndex( this, 100 );
         let fromX = this.x, fromY = this.y;
+        toY += 30;
         let g = 5;
         let t = 510;
         let deltaT = 30;
@@ -111,6 +112,7 @@ class MyElement extends egret.Bitmap {
         let vY = (toY - fromY) / n - g * n / 2;
         let timer = new egret.Timer(deltaT, n);
         let timerFunc = function() {
+
             this.x += vX;
             this.y += vY;
 

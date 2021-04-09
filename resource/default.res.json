@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "gem_1_png,gem_2_png,gem_3_png,gem_4_png,gem_5_png,h5by_xyx_zzjm_png,h5by_xyx_zzjmzb_png,h5by_xyx_zzjmyb_png,h5by_xyx_gs_png,h5by_xyx_ks_png,h5by_xyx_fkdb_png,gem_brick01_01_png,h5by_xyx_xbs_png,h5by_xyx_dyg_png,h5by_xyx_deg_png,h5by_xyx_dsg_png,elem_eli_1_json,elem_eli_2_json,elem_eli_3_json,elem_eli_4_json,elem_eli_5_json,score_json,h5by_xyx_hsks_png,combo_json,record_json,h5by_xyx_gj_png,h5by_xyx_gjz_png,h5by_xyx_qxgj_png,gem_bomb_png,bomb_json",
+			"keys": "gem_1_png,gem_2_png,gem_3_png,gem_4_png,gem_5_png,h5by_xyx_zzjm_png,h5by_xyx_zzjmzb_png,h5by_xyx_zzjmyb_png,h5by_xyx_gs_png,h5by_xyx_ks_png,h5by_xyx_fkdb_png,gem_brick01_01_png,h5by_xyx_xbs_png,h5by_xyx_dyg_png,h5by_xyx_deg_png,h5by_xyx_dsg_png,elem_eli_1_json,elem_eli_2_json,elem_eli_3_json,elem_eli_4_json,elem_eli_5_json,score_json,h5by_xyx_hsks_png,combo_json,record_json,h5by_xyx_gj_png,h5by_xyx_gjz_png,h5by_xyx_qxgj_png,gem_bomb_png,bomb_json,point_json,h5by_xyx_sbdb_png,h5by_xyx_jbdb-_png,goldCoin_json",
 			"name": "preload"
 		}
 	],
@@ -165,10 +165,39 @@
 			"name": "gem_bomb_png"
 		},
 		{
-			"name": "bomb_json",
-			"type": "sheet",
 			"url": "assets/lhdb_eff_bomb/bomb.json",
-			"subkeys": "elem_bomb_2,elem_bomb_3,elem_bomb_4,elem_bomb_5,elem_bomb_6,elem_bomb_7,elem_bomb_8,elem_bomb_9,elem_bomb_10,elem_bomb_11,elem_bomb_12,elem_bomb_13,elem_bomb_14,elem_bomb_15,elem_bomb_16,elem_bomb_17,elem_bomb_18,elem_bomb_19,elem_bomb_0,elem_bomb_1"
+			"type": "sheet",
+			"name": "bomb_json",
+			"subkeys": "elem_bomb_0,elem_bomb_1,elem_bomb_10,elem_bomb_11,elem_bomb_12,elem_bomb_13,elem_bomb_14,elem_bomb_15,elem_bomb_16,elem_bomb_17,elem_bomb_18,elem_bomb_19,elem_bomb_2,elem_bomb_3,elem_bomb_4,elem_bomb_5,elem_bomb_6,elem_bomb_7,elem_bomb_8,elem_bomb_9"
+		},
+		{
+			"url": "assets/lhdb_font_point/point.json",
+			"type": "sheet",
+			"name": "point_json",
+			"subkeys": "0,1,2,3,4,5,6,7,8,9,x"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_sbdb.png",
+			"type": "image",
+			"name": "h5by_xyx_sbdb_png",
+			"scale9grid": "10,10,7,17"
+		},
+		{
+			"url": "assets/lhdb_ui_main/h5by_xyx_jbdb-.png",
+			"type": "image",
+			"name": "h5by_xyx_jbdb-_png",
+			"scale9grid": "18,16,4,13"
+		},
+		{
+			"url": "assets/lhdb_font_lottery2/coin.png",
+			"type": "image",
+			"name": "coin_png"
+		},
+		{
+			"url": "assets/lhdb_font_lottery2/goldCoin.json",
+			"type": "sheet",
+			"name": "goldCoin_json",
+			"subkeys": "0,1,2,3,4,5,6,7,8,9,coin"
 		}
 	]
 }

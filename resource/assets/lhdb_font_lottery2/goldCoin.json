@@ -1,0 +1,12 @@
+{"file":"goldCoin.png","frames":{
+"0":{"x":81,"y":1,"w":47,"h":66,"offX":0,"offY":0,"sourceW":47,"sourceH":66},
+"1":{"x":226,"y":1,"w":27,"h":64,"offX":8,"offY":1,"sourceW":47,"sourceH":66},
+"2":{"x":127,"y":136,"w":43,"h":65,"offX":2,"offY":0,"sourceW":47,"sourceH":66},
+"3":{"x":81,"y":69,"w":44,"h":66,"offX":1,"offY":0,"sourceW":47,"sourceH":66},
+"4":{"x":130,"y":1,"w":47,"h":65,"offX":0,"offY":0,"sourceW":47,"sourceH":66},
+"5":{"x":48,"y":137,"w":43,"h":65,"offX":1,"offY":1,"sourceW":47,"sourceH":66},
+"6":{"x":130,"y":68,"w":45,"h":66,"offX":1,"offY":0,"sourceW":47,"sourceH":66},
+"7":{"x":1,"y":79,"w":45,"h":64,"offX":0,"offY":1,"sourceW":47,"sourceH":66},
+"8":{"x":177,"y":69,"w":44,"h":66,"offX":2,"offY":0,"sourceW":47,"sourceH":66},
+"9":{"x":179,"y":1,"w":45,"h":66,"offX":1,"offY":0,"sourceW":47,"sourceH":66},
+"coin":{"x":1,"y":1,"w":78,"h":76,"offX":16,"offY":16,"sourceW":110,"sourceH":110}}}

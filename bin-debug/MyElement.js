@@ -16,7 +16,7 @@ var MyElement = (function (_super) {
     function MyElement(x, y, to, n, isBomb) {
         if (isBomb === void 0) { isBomb = false; }
         var _this = _super.call(this) || this;
-        _this.rate = [0.1, 0.2, 0.5, 0.1, 0.1]; // 各元素出现概率，一共5种元素
+        _this.rate = [0.2, 0.2, 0.2, 0.2, 0.2]; // 各元素出现概率，一共5种元素
         _this.to = to;
         _this.n = n;
         if (isBomb) {
@@ -103,6 +103,7 @@ var MyElement = (function (_super) {
         var _this = this;
         container.setChildIndex(this, 100);
         var fromX = this.x, fromY = this.y;
+        toY += 30;
         var g = 5;
         var t = 510;
         var deltaT = 30;
@@ -137,6 +138,7 @@ var MyElement = (function (_super) {
             this.anchorOffsetY = this.height / 2;
             index++;
             if (index === 5) {
+                // 爆炸动画播放至第5帧时调用爆炸后逻辑，包括清除砖块进入下一关等
                 main.afterBomb();
             }
         };

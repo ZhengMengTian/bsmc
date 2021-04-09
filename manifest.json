@@ -9,9 +9,11 @@
 	],
 	"game": [
 		"bin-debug/ComboList.js",
+		"bin-debug/GoldCoin.js",
 		"bin-debug/LoadingUI.js",
 		"bin-debug/Main.js",
 		"bin-debug/MyElement.js",
+		"bin-debug/OperationDesk.js",
 		"bin-debug/Score.js"
 	]
 }
