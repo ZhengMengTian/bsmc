@@ -2,12 +2,12 @@
 
 class OperationDesk extends egret.DisplayObjectContainer {
 
-	private main;
-	private button1;
-	private button2;
-	private pointContainer:egret.DisplayObjectContainer;
-	private pointListContainer:egret.DisplayObjectContainer;	
-	private listIsShow:boolean = false;
+	private main;  // 保存main实例，用于调用其中的开始游戏等方法
+	private button1;  // 按钮显示对象
+	private button2;  // 按钮显示对象
+	private pointContainer:egret.DisplayObjectContainer;  // 当前倍率的显示容器
+	private pointListContainer:egret.DisplayObjectContainer;	// 倍率选择列表的显示容器
+	private listIsShow:boolean = false;   // 是否显示倍率选择列表
 	private pointList = [100000,200000, 500000, 1000000, 2000000, 5000000, 10000000]
 	public point;  //当前倍率
 

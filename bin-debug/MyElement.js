@@ -48,7 +48,7 @@ var MyElement = (function (_super) {
         //利用wait实现一行宝石参差不齐掉落
         egret.Tween.get(this).wait(Math.random() * 100).to({ x: this.x, y: this.to + 10 }, 300, egret.Ease.sineIn).to({ x: this.x, y: this.to - 10 }, 50, egret.Ease.sineIn).to({ x: this.x, y: this.to }, 50, egret.Ease.sineIn);
     };
-    //掉落效果2
+    //掉落效果2，填充空位时掉落
     MyElement.prototype.dropTo = function (x, y) {
         egret.Tween.get(this).to({ x: x, y: y + 10 }, 200, egret.Ease.sineIn).to({ x: x, y: y - 10 }, 40, egret.Ease.sineIn).to({ x: x, y: y }, 40, egret.Ease.sineIn);
     };
@@ -121,6 +121,7 @@ var MyElement = (function (_super) {
         };
         timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this);
         timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, function () {
+            // 飞行到终点后爆炸
             _this.bomb(container, main);
         }, this);
         timer.start();

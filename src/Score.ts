@@ -1,13 +1,14 @@
+// 得分效果类
 class Score extends egret.DisplayObjectContainer{
-	public num:number;
+	public num:number;  // 所得分数
 	public constructor(x:number,y:number,num:number, container:egret.DisplayObjectContainer) {
         super();
 
+		this.num = num;
 		let arr = num.toString().split('');
         let spriteSheet:egret.SpriteSheet = RES.getRes(`score_json`);
 		let space = 0;
-		this.num = num;
-
+		
 		for (let i = 0; i < arr.length; i++) {
 			let numBitmap:egret.Bitmap = new egret.Bitmap();
 			numBitmap.texture = spriteSheet.getTexture(arr[i]);

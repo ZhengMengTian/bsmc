@@ -1,9 +1,9 @@
 class ComboList extends egret.DisplayObjectContainer {
 
-	public showList = [];
-	public itemHeight = 65;
-	public totalNum = 0;
-	public comboContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer;
+	public showList = [];  // 显示的连击记录数组，最多5个
+	public itemHeight = 65;  // 连击项的高度
+	public totalNum = 0;   // 总连击数
+	public comboContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer;  // 连击列表的显示容器实例
 	public constructor(x:number, y:number) {
 		super();
 
@@ -17,10 +17,13 @@ class ComboList extends egret.DisplayObjectContainer {
 		this.comboContainer.x = 0;
 		this.comboContainer.y = -420;
 		this.addChild(this.comboContainer);
+
+		//创建底座及背景
 		this.createBitmapByName("h5by_xyx_gs_png", 0, -this.stage.stageHeight*0.32);
 		this.createBitmapByName("h5by_xyx_zzjmzb_png", 0, 0);
 	}
 
+	// 根据资源名添加显示对象
 	private createBitmapByName(name:string, x:number, y:number):void {
         var result:egret.Bitmap = new egret.Bitmap();
         var texture:egret.Texture = RES.getRes(name);
@@ -36,6 +39,7 @@ class ComboList extends egret.DisplayObjectContainer {
 	public addOne(eleIndex:number, num:number, fromX:number, fromY:number, maiContainer:egret.DisplayObjectContainer) {
 		this.totalNum++;
 		if (this.showList.length < 5) {
+			// 小于5条则添加投掷即可
 			let index = this.showList.push({eleIndex,num}) - 1;
 			let point = this.localToGlobal(-40, -90 - this.itemHeight * index);
 			let combo = new ComboItem(0,-90 - this.itemHeight * index,eleIndex,num);
@@ -43,6 +47,7 @@ class ComboList extends egret.DisplayObjectContainer {
 			this.addThrow(combo,eleIndex, fromX, fromY, point.x, point.y, maiContainer);
 		}
 		else {
+			// 大于5条时，删除最旧一条，整体下移，并添加投掷动画
 			this.removeChild(this.showList[0].combo);
 			this.showList = this.showList.slice(1);
 
@@ -78,7 +83,7 @@ class ComboList extends egret.DisplayObjectContainer {
 		result.y = fromY;
 		maiContainer.addChild(result);
 
-		let g = 5;
+		let g = 5;  // 模拟重力
         let t = 300;
         let deltaT = 30;
         let n = t / deltaT;
@@ -101,7 +106,7 @@ class ComboList extends egret.DisplayObjectContainer {
 		timer.start();
 	}
 
-	//清除所有记录
+	//清除所有记录，添加移除的动画
 	public clearAll():void {
 
 		if (this.totalNum <= 0) return;
@@ -156,6 +161,7 @@ class ComboList extends egret.DisplayObjectContainer {
 		this.createCombo(texture,50,10);
 	}
 
+	// 添加连击总数的各个数字
 	private createCombo(texture:egret.Texture, x:number, y:number) {
         var result:egret.Bitmap = new egret.Bitmap();
         result.texture = texture;
@@ -168,6 +174,8 @@ class ComboList extends egret.DisplayObjectContainer {
     }
 }
 
+
+// 连击列表中各个子项的类
 class ComboItem extends egret.DisplayObjectContainer {
 
 	public constructor(x:number, y:number, eleIndex:number, num:number) {

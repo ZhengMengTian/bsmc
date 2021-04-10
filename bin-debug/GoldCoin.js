@@ -26,17 +26,21 @@ var GoldCoin = (function (_super) {
         var arr = this.goldCoin.toString().split('');
         var spriteSheet = RES.getRes("goldCoin_json");
         var space = 40;
+        // 添加背景框
         var texture = RES.getRes('h5by_xyx_jbdb-_png');
         var bg = this.createBitmapByTexture(texture, 0, -5);
         bg.width *= 6;
         bg.height *= 1.2;
+        // 添加金币图形
         texture = spriteSheet.getTexture('coin');
         this.createBitmapByTexture(texture, 10, 0, 0.4);
+        // 添加数字
         for (var i = 0; i < arr.length; i++) {
             texture = spriteSheet.getTexture(arr[i]);
             space += this.createBitmapByTexture(texture, space, 0, 0.3).width * 0.3;
         }
     };
+    // 改变金币数并重绘
     GoldCoin.prototype.add = function (addCoin) {
         this.goldCoin += addCoin;
         this.init();

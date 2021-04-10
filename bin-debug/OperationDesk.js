@@ -16,7 +16,7 @@ var OperationDesk = (function (_super) {
     __extends(OperationDesk, _super);
     function OperationDesk(x, y, main) {
         var _this = _super.call(this) || this;
-        _this.listIsShow = false;
+        _this.listIsShow = false; // 是否显示倍率选择列表
         _this.pointList = [100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000];
         _this.x = x;
         _this.y = y;

@@ -11,23 +11,25 @@ class Main extends egret.DisplayObjectContainer {
     private comboList:ComboList;  // 连击显示区实例
     private operationDesk:OperationDesk;  // 操作台实例
     private goldCoin:GoldCoin;  // 金币显示区实例
-    private elemContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
-    private elemBgContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
-    private brickContainer1:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
-    private brickContainer2:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
-    private brickContainer3:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
-    private elementArr;
+    private elemContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();  //宝石元素的显示容器
+    private elemBgContainer:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();  //宝石背景的显示容器
+    private brickContainer1:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();  //第一关砖块的显示容器
+    private brickContainer2:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();  //第二关砖块的显示容器
+    private brickContainer3:egret.DisplayObjectContainer = new egret.DisplayObjectContainer();  //第三关砖块的显示容器
+    
+    private elementArr;  //用于管理整个棋盘的元素的状态，计算可消除元素
+    
     private level = 1;  //初始关卡
     private brickNum;  // 砖块数量
     private n:number; //棋盘边长
     private minNum:number = 4; // 最少多少个相同宝石可消除
+    private bombProb = [0.9, 0.9, 0.9];  //三关的炸弹生成概率
+    private initGoldCoin:number = 100000000; //初始金币
+
     private running:boolean = false;  //游戏是否正在进行中
     private auto:boolean = false;  //是否正在挂机
 
-    private bombProb = [0.9, 0.9, 0.9];  //炸弹生成概率
     private hasBomb = false;  // 是否有炸弹
-
-    private initGoldCoin:number = 100000000; //初始金币
 
     public constructor() {
         super();
@@ -91,8 +93,6 @@ class Main extends egret.DisplayObjectContainer {
         this.addChild( this.goldCoin );
         this.addChild( this.mainContainer );
 
-
-        
         this.initGame(this.level);
     }
 
@@ -112,6 +112,8 @@ class Main extends egret.DisplayObjectContainer {
     public gjCancel() {
         
         this.auto = false;
+
+        //重设按钮状态
         this.operationDesk.disableStartButton();
         this.operationDesk.enableGj();
     }
@@ -206,7 +208,6 @@ class Main extends egret.DisplayObjectContainer {
 
                 break;
         }
-        
     }
 
     //创建棋盘背景
@@ -239,14 +240,7 @@ class Main extends egret.DisplayObjectContainer {
         }
     }
 
-    private touchBegin(evt:egret.TouchEvent):void{
-        evt.$target.scaleX = evt.$target.scaleY = 1.1;
-    }
-
-    private touchEnd(evt:egret.TouchEvent):void{
-        evt.$target.scaleX = evt.$target.scaleY = 1;
-    }
-
+    // 游戏开始，扣除金币，移除宝石，创建新宝石
     public startGame():void{
         console.log('游戏开始');
 
@@ -278,6 +272,7 @@ class Main extends egret.DisplayObjectContainer {
         }
     }
 
+    // 创建宝石，执行后续的消除或爆炸逻辑
     private createElement():void {
 
         //生成炸弹的逻辑
@@ -337,8 +332,11 @@ class Main extends egret.DisplayObjectContainer {
 
     //炸弹爆炸逻辑
     private bomb(position) {
+        // 获取所炸的砖块的位置
         let brickPos = this.getBrickPos();
+        // 调用炸弹飞行函数
         this.elementArr[position.i][position.j].bombFly(brickPos.x,brickPos.y, this.elemContainer, this);
+        // 修改宝石状态管理矩阵
         this.elementArr[position.i][position.j] = null;
     }
 
@@ -362,12 +360,14 @@ class Main extends egret.DisplayObjectContainer {
                 return;
         }
         if (this.brickNum > 0) {
+            // 砖块未消除完毕
+            // 整理棋盘，填充空位，调用消除逻辑
             this.sortOut();
             this.fillEmpty();
-            //调用消除逻辑
             egret.setTimeout(() => {this.eliminate();},this,this.n * 100 + 400);
         }
         else if (this.level < 3) {
+            // 进入下一关
             this.initGame(++this.level);
             this.startGame();
         }
@@ -406,30 +406,31 @@ class Main extends egret.DisplayObjectContainer {
         return point;
     }
 
+    // 消除逻辑，计算消除元素，执行消除，推进流程
     private eliminate() {
         // 计算是否有可消除的
         let arr = this.eliminateCalc();
-        console.log(arr);
+
         if (arr.length > 0) {
             //有可消除的元素
             this.eliminateAct(arr);
         }
         else {
-            //无可消除的元素
+            //无可消除的元素，连击列表显示总连击数，推进流程
             this.comboList.showAll();
 
-                if (this.auto) {
-                    //如果正在挂机
-                    egret.setTimeout(() => {
-                    
-                        this.startGame();
-                    },this,800);
-                }
-                else {
-                    //如果没有挂机
-                    this.running = false;
-                    this.operationDesk.enableStartButton();
-                }
+            if (this.auto) {
+                //如果正在挂机
+                egret.setTimeout(() => {
+                
+                    this.startGame();
+                },this,800);
+            }
+            else {
+                //如果没有挂机
+                this.running = false;
+                this.operationDesk.enableStartButton();
+            }
             
             
         }
@@ -516,7 +517,7 @@ class Main extends egret.DisplayObjectContainer {
             //生成连击
             this.comboList.addOne(element.eleIndex,arr[0].length,point.x, point.y, this);
 
-            //消除
+            //修改宝石状态管理矩阵
             arr[0].forEach(v => {
                 this.elementArr[v.i][v.j].eliminate(this.elemContainer);
                 this.elementArr[v.i][v.j] = null;
@@ -524,7 +525,6 @@ class Main extends egret.DisplayObjectContainer {
             egret.setTimeout(() => {this.eliminateAct(arr.slice(1))},this,300);
         }
         else {
-
             // 消除完毕
             this.sortOut();
             this.fillEmpty();
@@ -538,7 +538,7 @@ class Main extends egret.DisplayObjectContainer {
         return l*this.operationDesk.point / 10;
     }
 
-    // 整理棋盘
+    // 整理棋盘，宝石掉落
     private sortOut() {
         let m = this.elementArr.length,n = this.elementArr[0].length;
         let dp = [], empty = [];
@@ -584,6 +584,7 @@ class Main extends egret.DisplayObjectContainer {
         }
     }
 
+    // 根据资源名添加显示对象
     private createBitmapByName(name:string, x:number, y:number, container:egret.DisplayObjectContainer, offset:boolean=true) {
         var result:egret.Bitmap = new egret.Bitmap();
         var texture:egret.Texture = RES.getRes(name);
@@ -594,5 +595,15 @@ class Main extends egret.DisplayObjectContainer {
         result.y = y;
         container.addChild(result);
         return result;
+    }
+
+    // 点击开始将元素放大
+    private touchBegin(evt:egret.TouchEvent):void{
+        evt.$target.scaleX = evt.$target.scaleY = 1.1;
+    }
+
+    // 点击结束将元素大小重置
+    private touchEnd(evt:egret.TouchEvent):void{
+        evt.$target.scaleX = evt.$target.scaleY = 1;
     }
 }

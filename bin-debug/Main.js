@@ -22,18 +22,18 @@ var Main = (function (_super) {
     function Main() {
         var _this = _super.call(this) || this;
         _this.mainContainer = new egret.DisplayObjectContainer();
-        _this.elemContainer = new egret.DisplayObjectContainer();
-        _this.elemBgContainer = new egret.DisplayObjectContainer();
-        _this.brickContainer1 = new egret.DisplayObjectContainer();
-        _this.brickContainer2 = new egret.DisplayObjectContainer();
-        _this.brickContainer3 = new egret.DisplayObjectContainer();
+        _this.elemContainer = new egret.DisplayObjectContainer(); //宝石元素的显示容器
+        _this.elemBgContainer = new egret.DisplayObjectContainer(); //宝石背景的显示容器
+        _this.brickContainer1 = new egret.DisplayObjectContainer(); //第一关砖块的显示容器
+        _this.brickContainer2 = new egret.DisplayObjectContainer(); //第二关砖块的显示容器
+        _this.brickContainer3 = new egret.DisplayObjectContainer(); //第三关砖块的显示容器
         _this.level = 1; //初始关卡
         _this.minNum = 4; // 最少多少个相同宝石可消除
+        _this.bombProb = [0.9, 0.9, 0.9]; //三关的炸弹生成概率
+        _this.initGoldCoin = 100000000; //初始金币
         _this.running = false; //游戏是否正在进行中
         _this.auto = false; //是否正在挂机
-        _this.bombProb = [0.9, 0.9, 0.9]; //炸弹生成概率
         _this.hasBomb = false; // 是否有炸弹
-        _this.initGoldCoin = 100000000; //初始金币
         _this.addEventListener(egret.Event.ADDED_TO_STAGE, _this.onAddToStage, _this);
         return _this;
     }
@@ -93,6 +93,7 @@ var Main = (function (_super) {
     //取消挂机
     Main.prototype.gjCancel = function () {
         this.auto = false;
+        //重设按钮状态
         this.operationDesk.disableStartButton();
         this.operationDesk.enableGj();
     };
@@ -208,12 +209,7 @@ var Main = (function (_super) {
             this.createBitmapByName("h5by_xyx_xbs_png", i * size, 0, this.brickContainer3);
         }
     };
-    Main.prototype.touchBegin = function (evt) {
-        evt.$target.scaleX = evt.$target.scaleY = 1.1;
-    };
-    Main.prototype.touchEnd = function (evt) {
-        evt.$target.scaleX = evt.$target.scaleY = 1;
-    };
+    // 游戏开始，扣除金币，移除宝石，创建新宝石
     Main.prototype.startGame = function () {
         var _this = this;
         console.log('游戏开始');
@@ -241,6 +237,7 @@ var Main = (function (_super) {
             this.createElement();
         }
     };
+    // 创建宝石，执行后续的消除或爆炸逻辑
     Main.prototype.createElement = function () {
         var _this = this;
         //生成炸弹的逻辑
@@ -298,8 +295,11 @@ var Main = (function (_super) {
     };
     //炸弹爆炸逻辑
     Main.prototype.bomb = function (position) {
+        // 获取所炸的砖块的位置
         var brickPos = this.getBrickPos();
+        // 调用炸弹飞行函数
         this.elementArr[position.i][position.j].bombFly(brickPos.x, brickPos.y, this.elemContainer, this);
+        // 修改宝石状态管理矩阵
         this.elementArr[position.i][position.j] = null;
     };
     //炸弹爆炸后
@@ -323,12 +323,14 @@ var Main = (function (_super) {
                 return;
         }
         if (this.brickNum > 0) {
+            // 砖块未消除完毕
+            // 整理棋盘，填充空位，调用消除逻辑
             this.sortOut();
             this.fillEmpty();
-            //调用消除逻辑
             egret.setTimeout(function () { _this.eliminate(); }, this, this.n * 100 + 400);
         }
         else if (this.level < 3) {
+            // 进入下一关
             this.initGame(++this.level);
             this.startGame();
         }
@@ -364,17 +366,17 @@ var Main = (function (_super) {
         }
         return point;
     };
+    // 消除逻辑，计算消除元素，执行消除，推进流程
     Main.prototype.eliminate = function () {
         var _this = this;
         // 计算是否有可消除的
         var arr = this.eliminateCalc();
-        console.log(arr);
         if (arr.length > 0) {
             //有可消除的元素
             this.eliminateAct(arr);
         }
         else {
-            //无可消除的元素
+            //无可消除的元素，连击列表显示总连击数，推进流程
             this.comboList.showAll();
             if (this.auto) {
                 //如果正在挂机
@@ -465,7 +467,7 @@ var Main = (function (_super) {
             this.goldCoin.add(score.num);
             //生成连击
             this.comboList.addOne(element.eleIndex, arr[0].length, point.x, point.y, this);
-            //消除
+            //修改宝石状态管理矩阵
             arr[0].forEach(function (v) {
                 _this.elementArr[v.i][v.j].eliminate(_this.elemContainer);
                 _this.elementArr[v.i][v.j] = null;
@@ -484,7 +486,7 @@ var Main = (function (_super) {
     Main.prototype.getScore = function (l) {
         return l * this.operationDesk.point / 10;
     };
-    // 整理棋盘
+    // 整理棋盘，宝石掉落
     Main.prototype.sortOut = function () {
         var m = this.elementArr.length, n = this.elementArr[0].length;
         var dp = [], empty = [];
@@ -531,6 +533,7 @@ var Main = (function (_super) {
             _loop_3(i);
         }
     };
+    // 根据资源名添加显示对象
     Main.prototype.createBitmapByName = function (name, x, y, container, offset) {
         if (offset === void 0) { offset = true; }
         var result = new egret.Bitmap();
@@ -542,6 +545,14 @@ var Main = (function (_super) {
         result.y = y;
         container.addChild(result);
         return result;
+    };
+    // 点击开始将元素放大
+    Main.prototype.touchBegin = function (evt) {
+        evt.$target.scaleX = evt.$target.scaleY = 1.1;
+    };
+    // 点击结束将元素大小重置
+    Main.prototype.touchEnd = function (evt) {
+        evt.$target.scaleX = evt.$target.scaleY = 1;
     };
     return Main;
 }(egret.DisplayObjectContainer));

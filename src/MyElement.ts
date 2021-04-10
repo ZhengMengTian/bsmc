@@ -1,10 +1,12 @@
 class MyElement extends egret.Bitmap {
 
-    public eleIndex:number;
-    public to:number;
-    public n:number;
+    public eleIndex:number;  // 宝石类型，炸弹是-1
+    public to:number;  // 记录宝石将掉落的终点坐标
+    public n:number;  // 多余
 
     private rate = [0.2, 0.2, 0.2, 0.2, 0.2];  // 各元素出现概率，一共5种元素
+
+
     public constructor(x:number,y:number,to:number,n:number, isBomb:boolean=false) {
         super();
 
@@ -44,7 +46,7 @@ class MyElement extends egret.Bitmap {
         egret.Tween.get(this).wait(Math.random()*100).to({x: this.x,y: this.to+10}, 300, egret.Ease.sineIn).to({x: this.x,y: this.to-10}, 50, egret.Ease.sineIn).to({x: this.x,y: this.to}, 50, egret.Ease.sineIn);
     }
 
-    //掉落效果2
+    //掉落效果2，填充空位时掉落
     private dropTo(x:number, y:number):void {
 
         egret.Tween.get(this).to({x: x,y: y+10}, 200, egret.Ease.sineIn).to({x: x,y: y-10}, 40, egret.Ease.sineIn).to({x: x,y: y}, 40, egret.Ease.sineIn);
@@ -125,6 +127,7 @@ class MyElement extends egret.Bitmap {
         timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this);
         timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, () => {
             
+            // 飞行到终点后爆炸
             this.bomb(container, main);
         }, this);
         timer.start();

@@ -15,10 +15,10 @@ var ComboList = (function (_super) {
     __extends(ComboList, _super);
     function ComboList(x, y) {
         var _this = _super.call(this) || this;
-        _this.showList = [];
-        _this.itemHeight = 65;
-        _this.totalNum = 0;
-        _this.comboContainer = new egret.DisplayObjectContainer;
+        _this.showList = []; // 显示的连击记录数组，最多5个
+        _this.itemHeight = 65; // 连击项的高度
+        _this.totalNum = 0; // 总连击数
+        _this.comboContainer = new egret.DisplayObjectContainer; // 连击列表的显示容器实例
         _this.x = x;
         _this.y = y;
         _this.addEventListener(egret.Event.ADDED_TO_STAGE, _this.init, _this);
@@ -28,9 +28,11 @@ var ComboList = (function (_super) {
         this.comboContainer.x = 0;
         this.comboContainer.y = -420;
         this.addChild(this.comboContainer);
+        //创建底座及背景
         this.createBitmapByName("h5by_xyx_gs_png", 0, -this.stage.stageHeight * 0.32);
         this.createBitmapByName("h5by_xyx_zzjmzb_png", 0, 0);
     };
+    // 根据资源名添加显示对象
     ComboList.prototype.createBitmapByName = function (name, x, y) {
         var result = new egret.Bitmap();
         var texture = RES.getRes(name);
@@ -45,6 +47,7 @@ var ComboList = (function (_super) {
     ComboList.prototype.addOne = function (eleIndex, num, fromX, fromY, maiContainer) {
         this.totalNum++;
         if (this.showList.length < 5) {
+            // 小于5条则添加投掷即可
             var index = this.showList.push({ eleIndex: eleIndex, num: num }) - 1;
             var point = this.localToGlobal(-40, -90 - this.itemHeight * index);
             var combo = new ComboItem(0, -90 - this.itemHeight * index, eleIndex, num);
@@ -52,6 +55,7 @@ var ComboList = (function (_super) {
             this.addThrow(combo, eleIndex, fromX, fromY, point.x, point.y, maiContainer);
         }
         else {
+            // 大于5条时，删除最旧一条，整体下移，并添加投掷动画
             this.removeChild(this.showList[0].combo);
             this.showList = this.showList.slice(1);
             var _loop_1 = function (i) {
@@ -85,7 +89,7 @@ var ComboList = (function (_super) {
         result.x = fromX;
         result.y = fromY;
         maiContainer.addChild(result);
-        var g = 5;
+        var g = 5; // 模拟重力
         var t = 300;
         var deltaT = 30;
         var n = t / deltaT;
@@ -104,7 +108,7 @@ var ComboList = (function (_super) {
         }, this);
         timer.start();
     };
-    //清除所有记录
+    //清除所有记录，添加移除的动画
     ComboList.prototype.clearAll = function () {
         var _this = this;
         if (this.totalNum <= 0)
@@ -155,6 +159,7 @@ var ComboList = (function (_super) {
         texture = spriteSheet.getTexture('l');
         this.createCombo(texture, 50, 10);
     };
+    // 添加连击总数的各个数字
     ComboList.prototype.createCombo = function (texture, x, y) {
         var result = new egret.Bitmap();
         result.texture = texture;
@@ -168,6 +173,7 @@ var ComboList = (function (_super) {
     return ComboList;
 }(egret.DisplayObjectContainer));
 __reflect(ComboList.prototype, "ComboList");
+// 连击列表中各个子项的类
 var ComboItem = (function (_super) {
     __extends(ComboItem, _super);
     function ComboItem(x, y, eleIndex, num) {

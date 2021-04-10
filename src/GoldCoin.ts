@@ -1,5 +1,5 @@
 class GoldCoin extends egret.DisplayObjectContainer {
-	public goldCoin:number;
+	public goldCoin:number;  // 当前金币
 	public constructor(x:number, y:number, initGoldCoin:number) {
 		super();
 
@@ -15,20 +15,24 @@ class GoldCoin extends egret.DisplayObjectContainer {
         let spriteSheet:egret.SpriteSheet = RES.getRes(`goldCoin_json`);
 		let space = 40;
 
+		// 添加背景框
 		let texture:egret.Texture = RES.getRes('h5by_xyx_jbdb-_png');
 		let bg = this.createBitmapByTexture(texture,0,-5);
 		bg.width *= 6;
 		bg.height *= 1.2;
 
+		// 添加金币图形
 		texture = spriteSheet.getTexture('coin');
 		this.createBitmapByTexture(texture,10,0, 0.4);
 
+		// 添加数字
 		for (let i = 0; i < arr.length; i++) {
 			texture = spriteSheet.getTexture(arr[i]);
 			space += this.createBitmapByTexture(texture,space,0,0.3).width * 0.3;
 		}
 	}
 
+	// 改变金币数并重绘
 	public add(addCoin:number) {
 		this.goldCoin += addCoin;
 		this.init();
