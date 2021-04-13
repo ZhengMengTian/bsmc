@@ -127,7 +127,7 @@ var OperationDesk = (function (_super) {
         this.button2.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
         this.button2.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
         this.button2.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, function () { _this.main.gj(); _this.disableGj(); }, this);
+        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, function () { _this.main.touchHandlerGj(); _this.disableGj(); }, this);
     };
     // 禁用挂机按钮&添加取消挂机按钮
     OperationDesk.prototype.disableGj = function () {
@@ -141,7 +141,7 @@ var OperationDesk = (function (_super) {
         this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
         this.button1.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
         this.button1.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.main.gjCancel, this.main);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.main.touchHandlerGjCancel, this.main);
     };
     // 设置倍率
     OperationDesk.prototype.setPoint = function (newPont) {

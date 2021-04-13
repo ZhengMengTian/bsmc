@@ -28,7 +28,7 @@ var Main = (function (_super) {
         _this.brickContainer2 = new egret.DisplayObjectContainer(); //第二关砖块的显示容器
         _this.brickContainer3 = new egret.DisplayObjectContainer(); //第三关砖块的显示容器
         _this.level = 1; //初始关卡
-        _this.minNum = 4; // 最少多少个相同宝石可消除
+        _this.minNum = 2; // 最少多少个相同宝石可消除
         _this.bombProb = [0.9, 0.9, 0.9]; //三关的炸弹生成概率
         _this.initGoldCoin = 100000000; //初始金币
         _this.running = false; //游戏是否正在进行中
@@ -80,26 +80,29 @@ var Main = (function (_super) {
         this.addChild(this.mainContainer);
         this.initGame(this.level);
     };
-    //挂机
-    Main.prototype.gj = function () {
+    //点击挂机处理函数
+    Main.prototype.touchHandlerGj = function () {
         if (this.running) {
+            //如果游戏正在进行中，则置auto为true即可
             this.auto = true;
         }
         else {
+            //如果游戏未在进行中，则置auto未true同时调用开始游戏函数
             this.auto = true;
             this.startGame();
         }
     };
-    //取消挂机
-    Main.prototype.gjCancel = function () {
+    //点击取消挂机的处理函数
+    Main.prototype.touchHandlerGjCancel = function () {
         this.auto = false;
         //重设按钮状态
         this.operationDesk.disableStartButton();
         this.operationDesk.enableGj();
     };
-    //创建关卡砖块以及棋盘背景
+    //创建关卡砖块以及棋盘背景，在每个关卡初始化时调用
     Main.prototype.initGame = function (level) {
         if (level === void 0) { level = 1; }
+        //先清空宝石状态管理数组和各个显示容器
         this.elementArr = [];
         this.mainContainer.removeChildren();
         this.elemContainer.removeChildren();
@@ -107,15 +110,16 @@ var Main = (function (_super) {
         this.brickContainer1.removeChildren();
         this.brickContainer2.removeChildren();
         this.brickContainer3.removeChildren();
-        this.createBitmapByName("h5by_xyx_zzjm_png", 0, 0, this.mainContainer);
+        this.createBitmapByName("h5by_xyx_zzjm_png", 0, 0, this.mainContainer); //创建整个棋盘的背景
         switch (level) {
             case 1:
-                this.brickNum = 15;
-                this.n = 4;
-                this.createBitmapByName("h5by_xyx_dyg_png", 10, -265, this.mainContainer);
+                this.brickNum = 15; //第一关砖块15个
+                this.n = 4; //第一关棋盘为4*4
+                this.createBitmapByName("h5by_xyx_dyg_png", 10, -265, this.mainContainer); //关卡标题
                 this.elemBgContainer.x = -167;
                 this.elemBgContainer.y = -195;
                 this.mainContainer.addChild(this.elemBgContainer);
+                // 第一关4*4棋盘位于整个盘面的i=3~6，j=1~4
                 for (var i = 3; i < 7; i++) {
                     for (var j = 1; j < 5; j++) {
                         this.createElemBg(i, j);
@@ -138,12 +142,13 @@ var Main = (function (_super) {
                 this.mainContainer.addChild(this.elemContainer);
                 break;
             case 2:
-                this.brickNum = 15;
-                this.n = 5;
-                this.createBitmapByName("h5by_xyx_deg_png", 10, -265, this.mainContainer);
+                this.brickNum = 15; //第二关砖块15个
+                this.n = 5; //第二关棋盘为5*5
+                this.createBitmapByName("h5by_xyx_deg_png", 10, -265, this.mainContainer); //第二关标题
                 this.elemBgContainer.x = -167;
                 this.elemBgContainer.y = -195;
                 this.mainContainer.addChild(this.elemBgContainer);
+                // 第二关5*5棋盘位于整个盘面的i=2~6，j=1~5
                 for (var i = 2; i < 7; i++) {
                     for (var j = 1; j < 6; j++) {
                         this.createElemBg(i, j);
@@ -162,12 +167,13 @@ var Main = (function (_super) {
                 this.mainContainer.addChild(this.elemContainer);
                 break;
             case 3:
-                this.brickNum = 15;
-                this.n = 6;
-                this.createBitmapByName("h5by_xyx_dsg_png", 10, -265, this.mainContainer);
+                this.brickNum = 15; //第三关砖块15个
+                this.n = 6; //第三关棋盘为6*6
+                this.createBitmapByName("h5by_xyx_dsg_png", 10, -265, this.mainContainer); //第三关标题
                 this.elemBgContainer.x = -167;
                 this.elemBgContainer.y = -195;
                 this.mainContainer.addChild(this.elemBgContainer);
+                // 第三关6*6棋盘位于整个盘面的i=1~6，j=0~5                
                 for (var i = 1; i < 7; i++) {
                     for (var j = 0; j < 6; j++) {
                         this.createElemBg(i, j);
@@ -220,8 +226,9 @@ var Main = (function (_super) {
         }
         //扣除金币开始游戏
         this.goldCoin.add(-this.operationDesk.point);
-        this.running = true;
+        //移除连击显示列表中的连击记录
         this.comboList.clearAll();
+        this.running = true;
         if (this.elemContainer.numChildren !== 0) {
             //先将原来的宝石移除
             for (var i = 0; i < this.elemContainer.numChildren; i++) {
@@ -305,7 +312,7 @@ var Main = (function (_super) {
     //炸弹爆炸后
     Main.prototype.afterBomb = function () {
         var _this = this;
-        this.brickNum--;
+        this.brickNum--; //砖块数-1
         switch (this.level) {
             case 1:
                 this.brickContainer1.removeChildren();
@@ -330,12 +337,14 @@ var Main = (function (_super) {
             egret.setTimeout(function () { _this.eliminate(); }, this, this.n * 100 + 400);
         }
         else if (this.level < 3) {
-            // 进入下一关
+            //砖块消除完毕
+            // 第一、第二关则进入下一关
             this.initGame(++this.level);
             this.startGame();
         }
         else {
-            // 回到第一关
+            //砖块消除完毕
+            // 第三关则回到第一关
             this.level = 1;
             this.initGame(this.level);
             this.startGame();
@@ -391,11 +400,12 @@ var Main = (function (_super) {
             }
         }
     };
-    //消除计算
+    //消除计算，返回所有可消除宝石的坐标
+    //思路：dp中保存的是与(i,j)位置宝石同色且相邻的所有宝石的坐标数组，当相邻同色宝石增加时，需要遍历该数组更新相应位置处的坐标数组
     Main.prototype.eliminateCalc = function () {
         var elementArr = [], dp = [null], reslut = [];
         var n = this.elementArr.length, m = this.elementArr[0].length;
-        //增加边界
+        //在第一行以及第一列增加边界
         elementArr.push([]);
         for (var i = 0; i <= m; i++) {
             elementArr[0][i] = { eleIndex: -1 };
@@ -407,7 +417,9 @@ var Main = (function (_super) {
             dp.push([null]);
             var _loop_2 = function (j) {
                 dp[i][j] = [{ i: i, j: j }];
+                //分三种情况
                 if (elementArr[i][j].eleIndex === elementArr[i][j - 1].eleIndex && elementArr[i][j].eleIndex === elementArr[i - 1][j].eleIndex) {
+                    //1. 当前位置宝石和上面左面都同色，则需要判断上面左面保存的坐标数组是否相同
                     if (dp[i - 1][j] === dp[i][j - 1]) {
                         var arr_1 = dp[i][j - 1].concat(dp[i][j]);
                         arr_1.forEach(function (value) {
@@ -422,12 +434,14 @@ var Main = (function (_super) {
                     }
                 }
                 else if (elementArr[i][j].eleIndex === elementArr[i][j - 1].eleIndex) {
+                    //2. 当前宝石和左面同色
                     var arr_3 = dp[i][j - 1].concat(dp[i][j]);
                     arr_3.forEach(function (value) {
                         dp[value.i][value.j] = arr_3;
                     });
                 }
                 else if (elementArr[i][j].eleIndex === elementArr[i - 1][j].eleIndex) {
+                    //当前宝石个上面同色
                     var arr_4 = dp[i - 1][j].concat(dp[i][j]);
                     arr_4.forEach(function (value) {
                         dp[value.i][value.j] = arr_4;
@@ -438,7 +452,7 @@ var Main = (function (_super) {
                 _loop_2(j);
             }
         }
-        //整理出应该被消除的宝石坐标
+        //整理出应该被消除的宝石坐标，dp矩阵中长度大于this.minNum的应该被消除
         for (var i = 1; i < n + 1; i++) {
             for (var j = 1; j < m + 1; j++) {
                 if (dp[i][j].length >= this.minNum && reslut.indexOf(dp[i][j]) === -1) {
@@ -446,6 +460,7 @@ var Main = (function (_super) {
                 }
             }
         }
+        //因为加了边界，所以对应宝石的坐标应该-1
         reslut.forEach(function (value) {
             value.forEach(function (v) {
                 v.i--;
@@ -489,16 +504,17 @@ var Main = (function (_super) {
     // 整理棋盘，宝石掉落
     Main.prototype.sortOut = function () {
         var m = this.elementArr.length, n = this.elementArr[0].length;
-        var dp = [], empty = [];
+        var empty = [];
         for (var i = 0; i < n; i++) {
             empty[i] = 0;
         }
+        // empty[j]保存的是遍历过程中第i行第j列以下的空位数量
         for (var i = m - 1; i >= 0; i--) {
-            dp[i] = [];
             for (var j = n - 1; j >= 0; j--) {
-                dp[i][j] = 0;
                 if (this.elementArr[i][j]) {
+                    //当前位置不是空位
                     if (empty[j] > 0) {
+                        //当前列存在空位，则当前位置处的宝石应该掉落的行数为empty[j]
                         var bg = this.elemBgContainer.getChildAt((i + empty[j]) * this.n + j);
                         this.elementArr[i][j].dropTo(bg.x, bg.y);
                         this.elementArr[i + empty[j]][j] = this.elementArr[i][j];
@@ -506,12 +522,13 @@ var Main = (function (_super) {
                     }
                 }
                 else {
+                    //当前位置是空位
                     empty[j]++;
                 }
             }
         }
     };
-    //填充空位
+    //填充空位，遍历this.elementArr数组找出值为null的位置生成宝石即可
     Main.prototype.fillEmpty = function () {
         var _this = this;
         var m = this.elementArr.length, n = this.elementArr[0].length;

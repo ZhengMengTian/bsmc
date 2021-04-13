@@ -122,15 +122,15 @@ var ComboList = (function (_super) {
                 combo.removeChildAt(1);
             }
             //移除的动画
-            var alpha = Math.random() * Math.PI;
-            var v = 40;
-            var vX = -Math.sin(alpha) * v * 0.5;
+            var alpha = Math.random() * Math.PI; //随机角度
+            var v = 20;
+            var vX = -Math.sin(alpha) * v;
             var vY = Math.cos(alpha) * v;
             var timer = new egret.Timer(30, 30);
             var timerFunc = function () {
                 combo.x += vX;
                 combo.y += vY;
-                vY += 5;
+                vY += 5; // 模拟重力
             };
             timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this_2);
             timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, function () {

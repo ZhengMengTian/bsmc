@@ -18,22 +18,20 @@ var MyElement = (function (_super) {
         var _this = _super.call(this) || this;
         _this.rate = [0.2, 0.2, 0.2, 0.2, 0.2]; // 各元素出现概率，一共5种元素
         _this.to = to;
-        _this.n = n;
         if (isBomb) {
             _this.eleIndex = -1;
         }
         else {
-            //随机颜色
+            //随机颜色算法
             var random = Math.random();
             var sum = 0;
-            _this.eleIndex = 0;
             for (var i = 0; i < _this.rate.length; i++) {
                 sum += _this.rate[i];
                 _this.eleIndex = i;
                 if (sum >= random)
                     break;
             }
-            _this.eleIndex++;
+            _this.eleIndex++; // 宝石类型从1开始，所以下标+1
         }
         var texture = isBomb ? RES.getRes("gem_bomb_png") : RES.getRes("gem_" + _this.eleIndex + "_png");
         _this.texture = texture;
@@ -55,19 +53,15 @@ var MyElement = (function (_super) {
     //移除效果
     MyElement.prototype.remove = function (elemContainer) {
         var _this = this;
-        var x = (Math.random() - 0.5) * 10;
-        var funcChange = function () {
-            _this.x += x;
-        };
-        var alpha = Math.random() * Math.PI * 2;
-        var v = 40;
-        var vX = Math.sin(alpha) * v * 0.5;
+        var alpha = Math.random() * Math.PI * 2; //随机角度
+        var v = 20;
+        var vX = Math.sin(alpha) * v;
         var vY = Math.cos(alpha) * v;
         var timer = new egret.Timer(30, 30);
         var timerFunc = function () {
             this.x += vX;
             this.y += vY;
-            vY += 5;
+            vY += 5; // 模拟重力
         };
         timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this);
         timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, function () {

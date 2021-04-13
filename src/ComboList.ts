@@ -121,15 +121,15 @@ class ComboList extends egret.DisplayObjectContainer {
 			}
 
 			//移除的动画
-			let alpha = Math.random() * Math.PI;
-			let v = 40;
-			let vX = -Math.sin(alpha) * v * 0.5;
+			let alpha = Math.random() * Math.PI;  //随机角度
+			let v = 20;
+			let vX = -Math.sin(alpha) * v;
 			let vY = Math.cos(alpha) * v;
 			let timer = new egret.Timer(30, 30);
 			let timerFunc = function() {
 				combo.x += vX;
 				combo.y += vY;
-				vY += 5;
+				vY += 5;  // 模拟重力
 			};
 			timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this);
 			timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, () => {

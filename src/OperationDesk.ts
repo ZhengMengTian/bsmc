@@ -8,7 +8,7 @@ class OperationDesk extends egret.DisplayObjectContainer {
 	private pointContainer:egret.DisplayObjectContainer;  // 当前倍率的显示容器
 	private pointListContainer:egret.DisplayObjectContainer;	// 倍率选择列表的显示容器
 	private listIsShow:boolean = false;   // 是否显示倍率选择列表
-	private pointList = [100000,200000, 500000, 1000000, 2000000, 5000000, 10000000]
+	private pointList = [100000,200000, 500000, 1000000, 2000000, 5000000, 10000000]  //倍率列表
 	public point;  //当前倍率
 
 	public constructor(x:number, y:number, main:Main) {
@@ -63,6 +63,7 @@ class OperationDesk extends egret.DisplayObjectContainer {
 
 	// 停用倍率选择按钮
 	private disablePoint() {
+
 		var colorMatrix = [
 			0.3,0.6,0,0,0,
 			0.3,0.6,0,0,0,
@@ -76,6 +77,7 @@ class OperationDesk extends egret.DisplayObjectContainer {
 
 	//初始化倍率列表
 	private initList() {
+		
 		this.pointListContainer = new egret.DisplayObjectContainer();
 		this.pointListContainer.y = -120;
 
@@ -137,7 +139,7 @@ class OperationDesk extends egret.DisplayObjectContainer {
         this.button2.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
         this.button2.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
         this.button2.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, ()=>{this.main.gj();this.disableGj();}, this);
+        this.button2.addEventListener(egret.TouchEvent.TOUCH_END, ()=>{this.main.touchHandlerGj();this.disableGj();}, this);
     }
 
     // 禁用挂机按钮&添加取消挂机按钮
@@ -154,7 +156,7 @@ class OperationDesk extends egret.DisplayObjectContainer {
         this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEnd, this);
         this.button1.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.touchEnd, this);
         this.button1.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.touchEnd, this);
-        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.main.gjCancel, this.main);
+        this.button1.addEventListener(egret.TouchEvent.TOUCH_END, this.main.touchHandlerGjCancel, this.main);
     }
 
 	// 设置倍率
