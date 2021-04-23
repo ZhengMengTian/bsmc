@@ -1,16 +1,13 @@
 var __reflect = (this && this.__reflect) || function (p, c, t) {
     p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
 };
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+var __extends = this && this.__extends || function __extends(t, e) { 
+ function r() { 
+ this.constructor = t;
+}
+for (var i in e) e.hasOwnProperty(i) && (t[i] = e[i]);
+r.prototype = e.prototype, t.prototype = new r();
+};
 var MyElement = (function (_super) {
     __extends(MyElement, _super);
     function MyElement(x, y, to, n, isBomb) {
@@ -72,7 +69,7 @@ var MyElement = (function (_super) {
         }, this);
         timer.start();
     };
-    //消除效果
+    //消除效果动画
     MyElement.prototype.eliminate = function (elemContainer) {
         var _this = this;
         var texture = RES.getRes("elem_eli_" + this.eleIndex + "_json");
@@ -86,6 +83,7 @@ var MyElement = (function (_super) {
         };
         timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this);
         timer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, function () {
+            //从显示容器中移除
             if (elemContainer.contains(_this)) {
                 elemContainer.removeChild(_this);
             }
@@ -95,22 +93,25 @@ var MyElement = (function (_super) {
     //炸弹飞行
     MyElement.prototype.bombFly = function (toX, toY, container, main) {
         var _this = this;
-        container.setChildIndex(this, 100);
+        container.setChildIndex(this, 100); //将炸弹的层级提升，以免被其他宝石遮挡
         var fromX = this.x, fromY = this.y;
-        toY += 30;
+        toY += 30; // 终点的y坐标加上砖块的高度，否则会在砖块上方爆炸
         var g = 5;
         var t = 510;
         var deltaT = 30;
         var n = t / deltaT;
+        // 计算vX、vY确保n次循环后飞至终点
         var vX = (toX - fromX) / n;
         var vY = (toY - fromY) / n - g * n / 2;
         var timer = new egret.Timer(deltaT, n);
         var timerFunc = function () {
             this.x += vX;
             this.y += vY;
-            vY += g;
+            vY += g; // 模拟重力
+            // 飞行过程中缩小
             this.scaleX -= 0.01;
             this.scaleY -= 0.01;
+            // 飞行过程中旋转
             this.rotation += 30;
         };
         timer.addEventListener(egret.TimerEvent.TIMER, timerFunc, this);

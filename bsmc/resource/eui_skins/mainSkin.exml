@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<e:Skin class="mainSkin" width="1136" height="640" xmlns:e="http://ns.egret.com/eui">
+    <e:Group id="allGp" width="1136" height="640" left="0" top="0">
+        <e:Group id="mainGp" width="669" height="626" x="227.98" y="7.98">
+            <e:Image source="main_json.h5by_xyx_zzjm"/>
+            <e:Image id="lvImg" source="main_json.h5by_xyx_dyg" x="306.6" y="31.95"/>
+        </e:Group>
+        <e:Group id="comboGp"  y="34.67" x="14.63" height="590.67" anchorOffsetY="0">
+            <e:Image source="main_json.h5by_xyx_gs" x="74.66" y="103.94"/>
+            <e:Image source="main_json.h5by_xyx_zzjmzb" bottom="0"/>
+            <e:Image source="main_json.h5by_xyx_ckjl" y="482.68" x="89.35" anchorOffsetX="0" width="133" anchorOffsetY="0" height="57.66"/>
+        </e:Group>
+		<e:Group id="opGp" y="108.05" x="806.71" height="500" width="300">
+            <e:Group bottom="0" width="300">
+                <e:Image source="main_json.h5by_xyx_zzjmyb" bottom="0"/>
+                <e:Image id="ksImg" source="main_json.h5by_xyx_ks" y="117.28" x="159.98" anchorOffsetX="90" anchorOffsetY="36.67"/>
+                <e:Image id="hsksImg" source="main_json.h5by_xyx_hsks" y="117.28" x="159.98" anchorOffsetX="90" anchorOffsetY="36.67" visible="false"/>
+                <e:Image id="qxgjImg" source="main_json.h5by_xyx_qxgj" y="117.28" x="159.98" anchorOffsetX="90" anchorOffsetY="36.67" visible="false"/>
+                <e:Image id="gjImg" source="main_json.h5by_xyx_gj" y="183.99" x="163.99" scaleX="1.2" scaleY="1.2" anchorOffsetX="24.44" anchorOffsetY="12.22"/>
+                <e:Image id="gjzImg" source="main_json.h5by_xyx_gjz" y="183.97" x="166.66" scaleX="1.2" scaleY="1.2" anchorOffsetX="36.67" anchorOffsetY="12.22" visible="false"/>
+                <e:BitmapLabel id="point" font="point_fnt" text="x10000" letterSpacing="-14" y="47.98" x="162.66" anchorOffsetX="102.67" width="205.33" height="40.66" textAlign="center" anchorOffsetY="20"/>
+            </e:Group> 
+        </e:Group>
+    </e:Group>
+</e:Skin>

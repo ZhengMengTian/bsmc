@@ -1,0 +1,10 @@
+{
+	"skins": {
+		"eui.mainSkin": "resource/eui_skins/mainSkin.exml"
+	},
+	"autoGenerateExmlsList": true,
+	"exmls": [
+		"resource/eui_skins/mainSkin.exml"
+	],
+	"path": "resource/default.thm.json"
+}

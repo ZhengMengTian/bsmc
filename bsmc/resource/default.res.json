@@ -1,0 +1,32 @@
+{
+	"groups": [
+		{
+			"keys": "main_json,point_fnt,combo_fnt,bomb_json",
+			"name": "preload"
+		}
+	],
+	"resources": [
+		{
+			"url": "assets/lhdb_ui_main/main.json",
+			"type": "sheet",
+			"name": "main_json",
+			"subkeys": "gem_1,gem_10,gem_11,gem_12,gem_13,gem_14,gem_15,gem_2,gem_3,gem_4,gem_5,gem_6,gem_7,gem_8,gem_9,gem_bomb,gem_brick01_01,gem_btn_help,gem_btn_music,h5by_xyx_ckjl,h5by_xyx_deg,h5by_xyx_djjl,h5by_xyx_dsg,h5by_xyx_dyg,h5by_xyx_fh,h5by_xyx_fkdb,h5by_xyx_gj,h5by_xyx_gjz,h5by_xyx_gs,h5by_xyx_hsks,h5by_xyx_jbdb-,h5by_xyx_jh,h5by_xyx_jt,h5by_xyx_ks,h5by_xyx_lj,h5by_xyx_qxgj,h5by_xyx_sbdb,h5by_xyx_sz,h5by_xyx_wh-,h5by_xyx_xbs,h5by_xyx_zzjm,h5by_xyx_zzjmyb,h5by_xyx_zzjmzb"
+		},
+		{
+			"url": "assets/lhdb_font_point/point.fnt",
+			"type": "font",
+			"name": "point_fnt"
+		},
+		{
+			"url": "assets/lhdb_font_combo/combo.fnt",
+			"type": "font",
+			"name": "combo_fnt"
+		},
+		{
+			"url": "assets/lhdb_eff_bomb/bomb.json",
+			"type": "sheet",
+			"name": "bomb_json",
+			"subkeys": "elem_bomb_0,elem_bomb_1,elem_bomb_10,elem_bomb_11,elem_bomb_12,elem_bomb_13,elem_bomb_14,elem_bomb_15,elem_bomb_16,elem_bomb_17,elem_bomb_18,elem_bomb_19,elem_bomb_2,elem_bomb_3,elem_bomb_4,elem_bomb_5,elem_bomb_6,elem_bomb_7,elem_bomb_8,elem_bomb_9"
+		}
+	]
+}

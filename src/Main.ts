@@ -16,7 +16,7 @@ class Main extends egret.DisplayObjectContainer {
     private level = 1;  //初始关卡
     private brickNum;  // 砖块数量
     private n:number; //棋盘边长
-    private minNum:number = 2; // 最少多少个相同宝石可消除
+    private minNum:number = 4; // 最少多少个相同宝石可消除
     private bombProb = [0.9, 0.9, 0.9];  //三关的炸弹生成概率
     private initGoldCoin:number = 100000000; //初始金币
 
